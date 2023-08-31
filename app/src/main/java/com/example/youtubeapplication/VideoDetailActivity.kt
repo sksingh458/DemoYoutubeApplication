@@ -9,14 +9,21 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.example.youtubeapplication.adapter.VideoAdapter
 import com.example.youtubeapplication.adapter.VideoDetailAdapter
+import com.example.youtubeapplication.dao.VideoHistoryDao
+import com.example.youtubeapplication.db.AppDatabase
 import com.example.youtubeapplication.models.VideoDetailItem
+import com.example.youtubeapplication.models.VideoHistory
 import com.example.youtubeapplication.repositry.RetrofitClient
+import com.example.youtubeapplication.repositry.VideoHistoryRepository
 import com.example.youtubeapplication.repositry.VideoRepository
 import com.example.youtubeapplication.repositry.YouTubeApiService
 import com.example.youtubeapplication.viewmodel.DetailVideoViewModel
+import com.example.youtubeapplication.viewmodel.VideoHistoryViewModel
+import com.example.youtubeapplication.viewmodel.VideoHistoryViewModelFactory
 import com.example.youtubeapplication.viewmodel.VideoViewModel
 import com.example.youtubeapplication.viewmodel.VideoViewModelFactory
 
@@ -26,8 +33,13 @@ class VideoDetailActivity : AppCompatActivity() {
 
     private lateinit var viewModel: DetailVideoViewModel
     private lateinit var videoDetailAdapter: VideoDetailAdapter
+    private lateinit var historyViewModel: VideoHistoryViewModel
 
-    private val repository = apiService?.let{ VideoRepository(it) }
+    private val repository = apiService?.let{ VideoRepository(it)
+    }
+
+    private val database = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "video_history_db")
+        .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +67,7 @@ class VideoDetailActivity : AppCompatActivity() {
                 .placeholder(R.drawable.placeholder_image)
                 .into(imageView)
 
+            addToHistory(videoDetail)
 
         }else{
             Log.d("VideoDetailsActivity Title passed:", " is null")
@@ -81,5 +94,25 @@ class VideoDetailActivity : AppCompatActivity() {
 
         // Fetch videos when the activity is created or when needed
         viewModel.fetchDetailVideos()
+    }
+
+    private fun addToHistory(videoDetail: VideoDetailItem) {
+
+        val videoHistoryDao: VideoHistoryDao = database.videoHistoryDao()
+        val videoHistoryRepository = VideoHistoryRepository(videoHistoryDao)
+
+        val viewModelFactory = videoHistoryRepository?.let { VideoHistoryViewModelFactory(it) }
+        historyViewModel = viewModelFactory?.let {
+            ViewModelProvider(this, it)[VideoHistoryViewModel::class.java]
+        }!!
+
+        val videoHistoryItem = VideoHistory(videoId = videoDetail.id.videoId,
+            title = videoDetail.snippet.title,
+            description = videoDetail.snippet.description,
+            thumbnailUrl = videoDetail.snippet.thumbnails.high.url,
+            timestamp = System.currentTimeMillis())
+
+        historyViewModel.addVideoToHistory(videoHistoryItem)
+
     }
 }

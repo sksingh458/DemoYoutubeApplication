@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.youtubeapplication.R
 import com.example.youtubeapplication.VideoDetailActivity
 import com.example.youtubeapplication.models.VideoDetailItem
+import com.example.youtubeapplication.models.VideoHistory
 
 class VideoAdapter : RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
 
@@ -77,6 +78,7 @@ class VideoAdapter : RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
                     val intent = Intent(itemView.context, VideoDetailActivity::class.java)
                     intent.putExtra("videoData", clickedVideo)
                     itemView.context.startActivity(intent)
+
                 }
 
             }
