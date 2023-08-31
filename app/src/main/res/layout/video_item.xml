@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:elevation="@dimen/cardview_default_elevation"
+    >
+
+    <!-- ImageView for video thumbnail -->
+    <ImageView
+        android:id="@+id/videoThumbnailImageView"
+        android:layout_width="match_parent"
+        android:layout_height="200sp"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/placeholder_image" />
+
+    <!-- TextViews for video title and description -->
+    <TextView
+        android:id="@+id/videoTitleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Video Title"
+        android:layout_marginBottom="8dp"
+        android:paddingStart="20dp"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/videoDescriptionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:text="Video Description"
+        android:paddingBottom="20dp"
+        android:textSize="14sp"/>
+</LinearLayout>
